@@ -1,5 +1,9 @@
 package com.example.restservice.controller.dto;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ErrorDto {
 
     private String title;
@@ -7,6 +11,8 @@ public class ErrorDto {
     private String detail;
     private long timeStamp;
     private String developerMessage;
+    private String path;
+    private Map<String, List<ValidationError>> errors = new HashMap<>();
 
     public String getTitle() {
         return title;
@@ -46,5 +52,21 @@ public class ErrorDto {
 
     public void setDeveloperMessage(String developerMessage) {
         this.developerMessage = developerMessage;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Map<String, List<ValidationError>> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(Map<String, List<ValidationError>> errors) {
+        this.errors = errors;
     }
 }
