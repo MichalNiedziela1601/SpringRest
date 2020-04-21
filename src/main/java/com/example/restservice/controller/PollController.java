@@ -3,6 +3,8 @@ package com.example.restservice.controller;
 import com.example.restservice.controller.exceptions.ResourceNotFoundException;
 import com.example.restservice.domain.Poll;
 import com.example.restservice.repository.PollRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
+@Api(value = "polls", description = "Poll API")
 public class PollController {
 
     @Inject
@@ -29,12 +32,15 @@ public class PollController {
     }
 
     @RequestMapping(value = "/polls", method = RequestMethod.GET)
+   @ApiOperation(value = "Retrieves all the polls", response=Poll.class, responseContainer = "List")
     public ResponseEntity<Iterable<Poll>> getAllPolls() {
         Iterable<Poll> allPolls = pollRepository.findAll();
         return new ResponseEntity<>(allPolls, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/polls", method = RequestMethod.POST)
+    @ApiOperation(value = "Creates a new Poll", notes="The newly created poll Id will be sent in the location response header"
+            ,response = Void.class)
     public ResponseEntity<?> createPoll(@Valid @RequestBody Poll poll) {
         poll = pollRepository.save(poll);
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -45,6 +51,7 @@ public class PollController {
     }
 
     @RequestMapping(value = "/polls/{pollId}", method = RequestMethod.GET)
+    @ApiOperation(value = "Retrieves a Poll associated with the Id", response = Poll.class)
     public ResponseEntity<?> getPoll(@PathVariable Long pollId) {
         Poll p = verifyPoll(pollId);
         return new ResponseEntity<>(p, HttpStatus.OK);
