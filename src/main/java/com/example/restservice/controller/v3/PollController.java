@@ -1,4 +1,4 @@
-package com.example.restservice.controller;
+package com.example.restservice.controller.v3;
 
 import com.example.restservice.controller.exceptions.ResourceNotFoundException;
 import com.example.restservice.domain.Poll;
@@ -18,8 +18,9 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
-@RestController
+@RestController("pollControllerV3")
 @Api(value = "polls", description = "Poll API")
+@RequestMapping("/v3/")
 public class PollController {
 
     @Inject
