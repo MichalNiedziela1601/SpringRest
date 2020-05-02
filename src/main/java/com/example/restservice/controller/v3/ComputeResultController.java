@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 
 @RestController("computeResultControllerV3")
-@RequestMapping("/v3/")
+@RequestMapping({"/v3/","/oauth2/v3/"})
 public class ComputeResultController {
 
     @Inject

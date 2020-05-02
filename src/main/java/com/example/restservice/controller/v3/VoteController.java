@@ -11,7 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.inject.Inject;
 
 @RestController("voteControllerV3")
-@RequestMapping("/v3/")
+@RequestMapping({"/v3/","/oauth2/v3/"})
 public class VoteController {
 
     @Inject

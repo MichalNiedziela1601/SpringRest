@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @RestController("pollControllerV3")
 @Api(value = "polls", description = "Poll API")
-@RequestMapping("/v3/")
+@RequestMapping({"/v3/","/oauth2/v3/"})
 public class PollController {
 
     @Inject
@@ -68,6 +69,7 @@ public class PollController {
     }
 
     @RequestMapping(value = "/polls/{pollId}", method = RequestMethod.DELETE)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> deletePoll(@PathVariable Long pollId) {
         verifyPoll(pollId);
         pollRepository.deleteById(pollId);
