@@ -44,7 +44,7 @@ public class PollController {
     @ApiOperation(value = "Creates a new Poll", notes="The newly created poll Id will be sent in the location response header"
             ,response = Void.class)
     public ResponseEntity<?> createPoll(@Valid @RequestBody Poll poll) {
-        poll = pollRepository.save(poll);
+        pollRepository.save(poll);
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(poll.getId()).toUri();
