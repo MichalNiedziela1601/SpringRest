@@ -1,12 +1,14 @@
 package com.example.restservice.domain;
 
+import org.springframework.hateoas.PagedModel;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
-public class Poll {
+public class Poll extends PagedModel<Poll> {
 
     @Id
     @GeneratedValue
@@ -24,11 +26,11 @@ public class Poll {
     private Set<Option> options;
 
 
-    public Long getId() {
+    public Long getPollId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setPollId(Long id) {
         this.id = id;
     }
 

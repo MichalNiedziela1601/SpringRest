@@ -1,6 +1,5 @@
 package com.example.restservice.controller;
 
-import com.example.restservice.RestServiceApplication;
 import com.example.restservice.domain.Option;
 import com.example.restservice.domain.Poll;
 import com.example.restservice.repository.PollRepository;
@@ -10,12 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -68,7 +63,7 @@ public class PollControllerTest {
     @Test
     void testGetPollById() throws Exception {
         Poll poll = new Poll();
-        poll.setId(1L);
+        poll.setPollId(1L);
         poll.setQuestion("Who will win World Cup?");
         Option option1 = new Option();
         option1.setId(2L);
@@ -86,7 +81,7 @@ public class PollControllerTest {
     @Test
     void testCreatePoll() throws Exception {
         Poll newPoll = new Poll();
-        newPoll.setId(1L);
+        newPoll.setPollId(1L);
         newPoll.setQuestion("Who will win World Cup?");
         Option option1 = new Option();
         option1.setId(2L);

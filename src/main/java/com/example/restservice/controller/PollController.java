@@ -1,12 +1,17 @@
 package com.example.restservice.controller;
 
+import com.example.restservice.assembers.PollModelAssember;
 import com.example.restservice.controller.exceptions.ResourceNotFoundException;
 import com.example.restservice.domain.Poll;
+import com.example.restservice.model.PollModel;
 import com.example.restservice.repository.PollRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +30,12 @@ public class PollController {
     @Inject
     private PollRepository pollRepository;
 
+    @Inject
+    private PollModelAssember pollModelAssember;
+
+    @Autowired
+    private PagedResourcesAssembler<Poll> pagedResourcesAssembler;
+
     private Poll verifyPoll(Long pollId) {
         Optional<Poll> p = pollRepository.findById(pollId);
         if(!p.isPresent()) {
@@ -35,10 +46,17 @@ public class PollController {
 
     @RequestMapping(value = "/polls", method = RequestMethod.GET)
    @ApiOperation(value = "Retrieves all the polls", response=Poll.class, responseContainer = "List")
-    public ResponseEntity<Page<Poll>> getAllPolls(Pageable pageable) {
+    public ResponseEntity<PagedModel<PollModel>> getAllPolls(Pageable pageable) {
         Page<Poll> allPolls = pollRepository.findAll(pageable);
-        return new ResponseEntity<>(allPolls, HttpStatus.OK);
+        PagedModel<PollModel> collModel = pagedResourcesAssembler.toModel(allPolls, pollModelAssember);
+        return new ResponseEntity<>(collModel, HttpStatus.OK);
     }
+
+//    private void updatePollResourceWithLinks(Poll poll, Pageable pageable) {
+//        poll.add(linkTo(methodOn(PollController.class).getAllPolls(pageable)).slash(poll.getPollId()).withSelfRel());
+//        poll.add(linkTo(methodOn(VoteController.class).getAllVotes(poll.getPollId())).withRel("votes"));
+//        poll.add(linkTo(methodOn(ComputeResultController.class).computeResult(poll.getPollId())).withRel("compute-result"));
+//    }
 
     @RequestMapping(value = "/polls", method = RequestMethod.POST)
     @ApiOperation(value = "Creates a new Poll", notes="The newly created poll Id will be sent in the location response header"
@@ -47,7 +65,7 @@ public class PollController {
         pollRepository.save(poll);
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(poll.getId()).toUri();
+                .path("/{id}").buildAndExpand(poll.getPollId()).toUri();
         responseHeaders.setLocation(newPollUri);
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
