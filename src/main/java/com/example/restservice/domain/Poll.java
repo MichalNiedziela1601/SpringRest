@@ -9,7 +9,7 @@ import java.util.Set;
 public class Poll {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="POLL_ID")
     private Long id;
 
