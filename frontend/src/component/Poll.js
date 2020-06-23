@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Form} from "react-bootstrap";
+import Button from "react-bootstrap/Button";
 
 export default class Poll extends Component {
 
@@ -34,12 +35,28 @@ export default class Poll extends Component {
         options.forEach(option => {
             radios.push(
                 <div key={option.id} className="form-check" style={style}>
-                    <Form.Check type="radio" id={`question-${option.id}`} label={option.value} name="question" value={option.value}
-                    onClick={(e) => { this.setState({value: e.target.value})}}/>
+                    <Form.Check type="radio" id={option.id} label={option.value} name="question" value={option.value}
+                    onClick={(e) => { this.setState({value: e.target.value, id: e.target.id})}}/>
                 </div>)
         });
         return radios;
     }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const body = JSON.stringify({
+            option : { id: this.state.id, value: this.state.value }
+        });
+        fetch(`${process.env.REACT_APP_API_HOST}/polls/${this.props.pollId}/votes`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type':'application/json'
+            },
+            body: body
+        })
+            .catch(console.log);
+    };
 
     render() {
         const { isLoaded, poll} = this.state;
@@ -49,6 +66,7 @@ export default class Poll extends Component {
                 <Form.Group>
                 { this.showRadioButtons()}
                 </Form.Group>
+                <Button variant="primary" type="submit" onClick={this.handleSubmit}>Submit</Button>
             </Form>
         )
     }
