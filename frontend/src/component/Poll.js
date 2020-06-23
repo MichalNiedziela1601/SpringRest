@@ -27,10 +27,13 @@ export default class Poll extends Component {
 
     showRadioButtons() {
         let options = this.state.poll.options;
+        let style = {
+            fontSize: 16
+        }
         let radios = [];
         options.forEach(option => {
             radios.push(
-                <div key={option.id} className="form-check">
+                <div key={option.id} className="form-check" style={style}>
                     <Form.Check type="radio" id={`question-${option.id}`} label={option.value} name="question" value={option.value}
                     onClick={(e) => { this.setState({value: e.target.value})}}/>
                 </div>)

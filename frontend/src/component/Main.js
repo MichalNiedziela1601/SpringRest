@@ -1,6 +1,6 @@
 import * as React from "react";
-import Poll from "./Poll";
 import PollCard from "./PollCard";
+import PaginationComponent from "./PaginationComponent";
 
 
 export default class Main extends React.Component {
@@ -10,19 +10,31 @@ export default class Main extends React.Component {
         this.state = {
             polls: [],
             isLoaded: false,
-            totalPages: 1,
-            currentPage: 1
+            activePage: 0,
+            size: 5
         }
     }
 
     componentDidMount() {
-        this.getPolls();
+        // console.log("componentDidMount");
+        this.getPolls(this.state.activePage, this.state.size);
     }
 
-    getPolls = ()=> {
-        fetch(`${process.env.REACT_APP_API_HOST}/polls`)
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("update");
+        if (prevState.activePage !== this.state.activePage) {
+            this.getPolls(this.state.activePage, this.state.size);
+        }
+        if (prevState.size !== this.state.size) {
+            this.getPolls(this.state.activePage, this.state.size);
+        }
+    }
+
+    getPolls = (pageNum, size) => {
+        fetch(`${process.env.REACT_APP_API_HOST}/polls?page=${pageNum}&size=${size}`)
             .then(res => res.json())
             .then(data => {
+                // console.log(data);
                 this.setState({
                     isLoaded: true,
                     polls: data.content,
@@ -34,15 +46,30 @@ export default class Main extends React.Component {
             .catch(console.log);
     };
 
+    handlePage = (value) => {
+        this.setState({activePage: value});
+    };
+
+    handleSize = (value) => {
+        this.setState({size: value, activePage: 0});
+    };
 
 
     render() {
-        if(!this.state.isLoaded || !this.state.polls ) return null;
-        const elements = this.state.polls.map((poll)=>
+        if (!this.state.isLoaded || !this.state.polls) return null;
+        const elements = this.state.polls.map((poll) =>
             <PollCard pollId={poll.id} key={poll.id} title={poll.question}/>
         );
+        const size = this.state.size;
+        const activePage = this.state.activePage;
+        const totalPages = this.state.totalPages;
         return (
-            <div>{elements}</div>
+            <div>
+                {elements}
+                <PaginationComponent handlePage={this.handlePage} handleSize={this.handleSize} size={size}
+                                     activePage={activePage} totalPages={totalPages}/>
+            </div>
+
         )
     }
 }
